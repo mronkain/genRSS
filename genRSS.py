@@ -289,7 +289,7 @@ def getTitleFromFile(fname):
     test/invalid/checksum.md5
 
     '''
-        
+
     eyed3.log.setLevel("ERROR")
     audio_file = eyed3.load(fname)
 
@@ -400,7 +400,7 @@ def main(argv=None):
         parser.add_option("-r", "--recursive", dest="recursive", help="Look for media files recursively in sub directories ? [Default:False]", action="store_true", default=False)
         parser.add_option("-e", "--extensions", dest="extensions", help="A comma separated list of extensions (e.g. mp3,mp4,avi,ogg) [Default:None => all files]", type="string", default=None, metavar="STRING")
 
-        parser.add_option("-o", "--out", dest="outfile", help="Output RSS file [default: stdout]", metavar="FILE")
+        parser.add_option("-o", "--out", dest="outfile", help="Output RSS file [Default: stdout]", metavar="FILE")
         parser.add_option("-H", "--host", dest="host", help="Host name (or IP address), possibly with a path to the base directory where your media directory is located\
         Examples of host names:\
            mywebsite.com/media/JapaneseLessons\n \
@@ -408,15 +408,15 @@ def main(argv=None):
            192.168.1.12:8080                  \n \
            192.168.1.12:8080/media/JapaneseLessons \n \
            http://192.168.1.12/media/JapaneseLessons \n", default="http://localhost:8080",  metavar="URL")
-        parser.add_option("-i", "--image", dest="image", help="Feed image as a http(s) url or a relative path [default: None]", default = None, metavar="URL or RELATIVE_PATH")
+        parser.add_option("-i", "--image", dest="image", help="Feed image as a http(s) url or a relative path [Default: None]", default = None, metavar="URL or RELATIVE_PATH")
 
-        parser.add_option("-t", "--title", dest="title", help="Title of the podcast [Defaule:None]", default=None, metavar="STRING")
-        parser.add_option("-p", "--description", dest="description", help="Description of the [Defaule:None]", default=None, metavar="STRING")
+        parser.add_option("-t", "--title", dest="title", help="Title of the podcast [Default:None]", default=None, metavar="STRING")
+        parser.add_option("-p", "--description", dest="description", help="Description of the [Default:None]", default=None, metavar="STRING")
         parser.add_option("-C", "--sort-creation", dest="sort_creation", help="Sort files by date of creation instead of name (default) and current date", action="store_true", default=False)
 
-        parser.add_option("-u", "--use-id3-tags", dest="use_id3", help="Read episode titles from id3 tags", action="store_true", default=False)
+        parser.add_option("-u", "--use-id3-tags", dest="use_id3", help="Read ID3 tags for episode titles instead of filename (default). Only works for MP3 files", action="store_true", default=False)
 
-        parser.add_option("-v", "--verbose", dest="verbose", action="count", help="set verbosity level [default: %default]")
+        parser.add_option("-v", "--verbose", dest="verbose", action="count", help="set verbosity level [Default: %default]")
 
         # process options
         (opts, args) = parser.parse_args(argv)

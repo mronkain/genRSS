@@ -282,7 +282,7 @@ def getTitleFromFile(fname):
         return fname
 
 
-def fileToItem(host, fname, pubDate, useId3):
+def fileToItem(host, fname, pubDate, useId3=False):
     '''
     Inspect a file name to determine what kind of RSS item to build, and
     return the built item.
@@ -298,9 +298,10 @@ def fileToItem(host, fname, pubDate, useId3):
     pubDate : string
               Publication date in RFC 822 format.
 
-    useId3 : boolean
-             Use id3 tag information for episode titles. Filenames will be used if
-             false
+    useId3 : bool
+             If True, use id3 tag information for episode titles. Filenames 
+             will be used otherwise or if no id3 tag is found
+             Default = False.
 
     Returns
     -------
@@ -308,7 +309,7 @@ def fileToItem(host, fname, pubDate, useId3):
 
     Examples
     --------
-    >>> print fileToItem('example.com/', 'test/media/1.mp3', 'Mon, 16 Jan 2017 23:55:07 +0000', false)
+    >>> print fileToItem('example.com/', 'test/media/1.mp3', 'Mon, 16 Jan 2017 23:55:07 +0000', False)
           <item>
              <guid>example.com/test/media/1.mp3</guid>
              <link>example.com/test/media/1.mp3</link>

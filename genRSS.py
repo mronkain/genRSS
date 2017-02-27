@@ -40,7 +40,7 @@ import eyed3
 __all__ = []
 __version__ = 0.1
 __date__ = '2014-11-01'
-__updated__ = '2017-02-19'
+__updated__ = '2017-02-27'
 
 DEBUG = 0
 TESTRUN = 0

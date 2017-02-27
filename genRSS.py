@@ -32,6 +32,7 @@ import fnmatch
 import time
 import urllib
 import mimetypes
+import cgi
 
 from optparse import OptionParser
 import eyed3
@@ -228,8 +229,8 @@ def buildItem(link, title, guid = None, description="", pubDate=None, indent = "
 
     guid =  "{0}<guid>{1}</guid>\n".format(indent * 3, guid)
     link = "{0}<link>{1}</link>\n".format(indent * 3, link)
-    title = "{0}<title>{1}</title>\n".format(indent * 3, title)
-    descrption = "{0}<description>{1}</description>\n".format(indent * 3, description)
+    title = "{0}<title>{1}</title>\n".format(indent * 3, cgi.escape(title))
+    descrption = "{0}<description>{1}</description>\n".format(indent * 3, cgi.escape(description))
 
     if pubDate is not None:
         pubDate = "{0}<pubDate>{1}</pubDate>\n".format(indent * 3, pubDate)

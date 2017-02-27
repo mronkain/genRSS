@@ -76,16 +76,16 @@ def getFiles(dirname, extensions=None, recursive=False):
     --------
     >>> import os
     >>> m = "test{0}media{0}".format(os.sep)
-    >>> expected = "['{0}1.mp3', '{0}1.mp4', '{0}1.ogg', '{0}2.MP3']".format(m)
+    >>> expected = "['{0}1.mp3', '{0}1.mp4', '{0}1.ogg', '{0}2.MP3', '{0}3.MP3', '{0}4.mp3']".format(m)
     >>> str(getFiles("{0}".format(m))) == expected
     True
-    >>> expected = "['{0}1.mp3', '{0}1.mp4', '{0}1.ogg', '{0}2.MP3', '{0}subdir_1{1}2.MP4', '{0}subdir_1{1}3.mp3', '{0}subdir_1{1}4.mp3', '{0}subdir_2{1}4.mp4', '{0}subdir_2{1}5.mp3', '{0}subdir_2{1}6.mp3']".format(m, os.sep)
+    >>> expected = "['{0}1.mp3', '{0}1.mp4', '{0}1.ogg', '{0}2.MP3', '{0}3.MP3', '{0}4.mp3', '{0}subdir_1{1}2.MP4', '{0}subdir_1{1}3.mp3', '{0}subdir_1{1}4.mp3', '{0}subdir_2{1}4.mp4', '{0}subdir_2{1}5.mp3', '{0}subdir_2{1}6.mp3']".format(m, os.sep)
     >>> str(getFiles("{0}".format(m), recursive=True)) == expected
     True
-    >>> expected = "['{0}1.mp3', '{0}2.MP3']".format(m)
+    >>> expected = "['{0}1.mp3', '{0}2.MP3', '{0}3.MP3', '{0}4.mp3']".format(m)
     >>> str(getFiles("{0}".format(m), extensions=["mp3"])) == expected
     True
-    >>> expected = "['{0}1.mp3', '{0}1.ogg', '{0}2.MP3', '{0}subdir_1{1}3.mp3', '{0}subdir_1{1}4.mp3', '{0}subdir_2{1}5.mp3', '{0}subdir_2{1}6.mp3']".format(m, os.sep)
+    >>> expected = "['{0}1.mp3', '{0}1.ogg', '{0}2.MP3', '{0}3.MP3', '{0}4.mp3', '{0}subdir_1{1}3.mp3', '{0}subdir_1{1}4.mp3', '{0}subdir_2{1}5.mp3', '{0}subdir_2{1}6.mp3']".format(m, os.sep)
     >>> str(getFiles("{0}".format(m), extensions=["mp3", "ogg"], recursive=True)) == expected
     True
     >>> expected = "['{0}1.mp4', '{0}subdir_1{1}2.MP4', '{0}subdir_2{1}4.mp4']".format(m, os.sep)
@@ -229,8 +229,8 @@ def buildItem(link, title, guid = None, description="", pubDate=None, indent = "
 
     guid =  "{0}<guid>{1}</guid>\n".format(indent * 3, guid)
     link = "{0}<link>{1}</link>\n".format(indent * 3, link)
-    title = "{0}<title>{1}</title>\n".format(indent * 3, cgi.escape(title))
-    descrption = "{0}<description>{1}</description>\n".format(indent * 3, cgi.escape(description))
+    title = "{0}<title>{1}</title>\n".format(indent * 3, cgi.escape(title, True))
+    descrption = "{0}<description>{1}</description>\n".format(indent * 3, cgi.escape(description, True))
 
     if pubDate is not None:
         pubDate = "{0}<pubDate>{1}</pubDate>\n".format(indent * 3, pubDate)
@@ -260,20 +260,37 @@ def buildItem(link, title, guid = None, description="", pubDate=None, indent = "
 
 def getTitleFromFile(fname):
     '''
-    Use eyeD3 library to fetch title from mp3 file
-
+    Use eyeD3 library to fetch title from an mp3 file.
     Parameters
     ----------
 
     fname : string
             Filename to inspect.
 
-
     Returns
     -------
-    Title of the file or filename if no valid tag is found
+    Title tag of the file or filename if no valid tag is found
+
+    Examples
+    --------
+    >>> print getTitleFromFile('test/media/1.mp3')
+    test/media/1.mp3
+
+    >>> print getTitleFromFile('test/media/1.ogg')
+    test/media/1.ogg
+
+    >>> print getTitleFromFile('test/media/3.MP3')
+    Smooth Birch & The Moon's "Savior"
+
+    >>> print getTitleFromFile('test/media/4.mp3')
+    Emerald Destruction
+
+    >>> print getTitleFromFile('test/invalid/checksum.md5')
+    test/invalid/checksum.md5
 
     '''
+        
+    eyed3.log.setLevel("ERROR")
     audio_file = eyed3.load(fname)
 
     if audio_file is not None and audio_file.tag is not None and audio_file.tag.title is not None:
@@ -299,7 +316,7 @@ def fileToItem(host, fname, pubDate, useId3=False):
               Publication date in RFC 822 format.
 
     useId3 : bool
-             If True, use id3 tag information for episode titles. Filenames 
+             If True, use id3 tag information for episode titles. Filenames
              will be used otherwise or if no id3 tag is found
              Default = False.
 
@@ -309,7 +326,7 @@ def fileToItem(host, fname, pubDate, useId3=False):
 
     Examples
     --------
-    >>> print fileToItem('example.com/', 'test/media/1.mp3', 'Mon, 16 Jan 2017 23:55:07 +0000', False)
+    >>> print fileToItem('example.com/', 'test/media/1.mp3', 'Mon, 16 Jan 2017 23:55:07 +0000')
           <item>
              <guid>example.com/test/media/1.mp3</guid>
              <link>example.com/test/media/1.mp3</link>
@@ -334,6 +351,16 @@ def fileToItem(host, fname, pubDate, useId3=False):
              <description>windows.exe</description>
              <pubDate>Mon, 16 Jan 2017 23:55:07 +0000</pubDate>
           </item>
+    >>> print fileToItem('example.com/', 'test/media/3.MP3', 'Mon, 16 Jan 2017 23:55:07 +0000', True)
+          <item>
+             <guid>example.com/test/media/3.MP3</guid>
+             <link>example.com/test/media/3.MP3</link>
+             <title>Smooth Birch &amp; The Moon's &quot;Savior&quot;</title>
+             <description>Smooth Birch &amp; The Moon's &quot;Savior&quot;</description>
+             <pubDate>Mon, 16 Jan 2017 23:55:07 +0000</pubDate>
+             <enclosure url="example.com/test/media/3.MP3" type="audio/mpeg" length="1077"/>
+          </item>
+
     '''
 
     fileURL = urllib.quote(host + fname.replace("\\", "/"), ":/")
